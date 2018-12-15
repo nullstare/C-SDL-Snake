@@ -31,6 +31,9 @@ void game_window() {
         print_sdl_error( "Error in creating renderer", SDL_GetError() );
     }
 
+    SDL_Surface * icon = IMG_Load( "img/apple.png" );
+    SDL_SetWindowIcon( window, icon );
+
     process( renderer );
 
     SDL_DestroyWindow( window );

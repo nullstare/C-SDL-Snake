@@ -1,5 +1,6 @@
 INCDIR = inc/
 CC = gcc
+# CC = clang # clearer error messages
 CFLAGS = -I $(INCDIR) `sdl2-config --cflags` #-std=c11 #-Wall -pedantic -ansi
 LFLAGS = `sdl2-config --libs` -no-pie -lSDL2 -lSDL2_image
 EXE = Snake

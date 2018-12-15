@@ -4,7 +4,6 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <time.h>
-// #include <stdio.h>
 
 #define WIN_WIDTH 128
 #define WIN_HEIGHT 128
@@ -20,5 +19,10 @@ typedef struct {
     int32_t x;
     int32_t y;
 } Vector2;
+
+typedef struct {
+    Vector2 pos;
+    double angle;
+} Segment;
 
 #endif /* MAIN_H */
