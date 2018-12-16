@@ -4,10 +4,15 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <time.h>
+#include <math.h>
 
 #define WIN_WIDTH 128
 #define WIN_HEIGHT 128
 #define FPS 60
+
+#define PI 3.14159265
+
+#define SIGN(a) a >= 0 ? 1 : -1
 
 /*Prototypes*/
 

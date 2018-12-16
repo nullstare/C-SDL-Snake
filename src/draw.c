@@ -30,21 +30,19 @@ void draw_ground( SDL_Renderer * renderer, SDL_Texture * image ) {
 }
 
 void draw_snake( SDL_Renderer * renderer, SDL_Texture * image, Segment * snake, Uint16 snake_len ) {
-    Uint16 i;
+    int i;
     SDL_Rect srcrect;
     SDL_Rect dstrect;
     SDL_Point center;
     SDL_RendererFlip flip = SDL_FLIP_NONE;
-    double angle;
 
     center.x = 4; center.y = 4;
     srcrect.x = 0; srcrect.y = 0; srcrect.w = 8; srcrect.h = 8;
     dstrect.x = 8; dstrect.y = 8; dstrect.w = 8; dstrect.h = 8;
 
-    for ( i = 0; i < snake_len; i++ ) {
+    for ( i = snake_len - 1; i > -1; i-- ) {
         dstrect.x = snake[i].pos.x * 8;
         dstrect.y = snake[i].pos.y * 8;
-        angle = 0;
 
         if ( i == 0 ) {
             srcrect.x = 24;
@@ -52,11 +50,23 @@ void draw_snake( SDL_Renderer * renderer, SDL_Texture * image, Segment * snake, 
         else if ( i == snake_len - 1 ) {
             srcrect.x = 8;
         }
+        else if ( snake[i].angle != snake[i - 1].angle ) {
+            srcrect.x = 0;
+            double val = 180.0 / PI, ang_to_next;
+
+            ang_to_next = snake[i].angle + atan2( snake[i - 1].pos.x - snake[i].pos.x, snake[i - 1].pos.y - snake[i].pos.y ) * val;
+
+            if ( round(ang_to_next) == 180.0 ) {
+                flip = SDL_FLIP_VERTICAL;
+            }
+            else {
+                flip = SDL_FLIP_NONE;
+            }
+        }
         else {
             srcrect.x = 16;
         }
-        draw( renderer, image, srcrect, dstrect, angle, center, flip );
-        // draw_tile( renderer, image, snake[i].pos );
+        draw( renderer, image, srcrect, dstrect, snake[i].angle, center, flip );
     }
 }
 
@@ -66,7 +76,6 @@ SDL_Texture * load_texture( SDL_Renderer * renderer, char * path ) {
     image = IMG_LoadTexture( renderer, path );
 
     if ( image == NULL ) {
-        // printf( "Cannot load texture: %s SDL_Error: %s\n", path, SDL_GetError() );
         print_sdl_error( "Cannot load texture", SDL_GetError() );
         return image;
     }

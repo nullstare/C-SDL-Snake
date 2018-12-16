@@ -10,6 +10,9 @@ int main(int argc, char const **argv) {
 void game_window() {
     SDL_Window *window;
 
+    // printf("sign of 2 is %d\n", SIGN(2));
+    // printf("sign of -5 is %d\n", SIGN(-5));
+
     if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
         print_sdl_error( "Unable to initialize SDL video", SDL_GetError() );
     }
@@ -24,7 +27,7 @@ void game_window() {
 
     SDL_Renderer *renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
     /* Other SDL settings */
-    // SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "0" );
+    SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "0" );
     SDL_RenderSetLogicalSize( renderer, WIN_WIDTH, WIN_HEIGHT );
 
     if ( renderer == NULL ) {
