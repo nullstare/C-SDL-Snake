@@ -46,9 +46,11 @@ void draw_snake( SDL_Renderer * renderer, SDL_Texture * image, Segment * snake, 
 
         if ( i == 0 ) {
             srcrect.x = 24;
+            flip = SDL_FLIP_NONE;
         }
         else if ( i == snake_len - 1 ) {
             srcrect.x = 8;
+            flip = SDL_FLIP_NONE;
         }
         else if ( snake[i].angle != snake[i - 1].angle ) {
             srcrect.x = 0;
@@ -65,6 +67,7 @@ void draw_snake( SDL_Renderer * renderer, SDL_Texture * image, Segment * snake, 
         }
         else {
             srcrect.x = 16;
+            flip = SDL_FLIP_NONE;
         }
         draw( renderer, image, srcrect, dstrect, snake[i].angle, center, flip );
     }

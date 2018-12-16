@@ -113,6 +113,10 @@ void input( int * running, double * angle ) {
                     *running = 2;
                     return;
                 }
+                else if ( event.key.keysym.sym == SDLK_ESCAPE ) {
+                    *running = 0;
+                    return;
+                }
         }
     }
 }
