@@ -4,7 +4,7 @@
 
 void process( SDL_Renderer * renderer ) {
     Uint32 starting_tick;
-    int running = 1, eaten = 0, can_turn = 1, grow = 0, alive = 1;
+    int running = 1, eaten = 0, grow = 0, alive = 1;
 
     /*Textures*/
     SDL_Texture * grass_tex = load_texture( renderer, "img/grass.png" );
@@ -20,7 +20,7 @@ void process( SDL_Renderer * renderer ) {
     /*Timing*/
     Uint64 old_time, new_time = SDL_GetPerformanceCounter();
     const double game_speed = 0.15;
-    double delta, game_time_current = 0.0, steer_angle = 0.0;
+    double delta, game_time_current = 0.0, steer_angle = 0.0, move_angle = 0.0;
 
     /*apple set pos*/
     Vector2 apple_pos;
@@ -32,23 +32,38 @@ void process( SDL_Renderer * renderer ) {
         new_time = SDL_GetPerformanceCounter();
         delta = (double)( ( new_time - old_time ) / (double)SDL_GetPerformanceFrequency() );
         game_time_current += delta;
+        input( &running );
 
-        if ( can_turn ) {
-            input( &running, &steer_angle );
-            can_turn = 0;
+        if ( KEYS[SDL_GetScancodeFromName("Escape")] ) {
+            running = 0;
+        }
 
-            if ( running == 2) {
-                snake_len = 3;
-                restart( snake, snake_len );
-                running = 1;
-                apple_pos = set_apple( snake, snake_len );
-                alive = 1;
-                steer_angle = 0.0;
-            }
+        if ( KEYS[SDL_GetScancodeFromName("Return")] && alive == 0 ) {
+            snake_len = 3;
+            restart( snake, snake_len );
+            running = 1;
+            apple_pos = set_apple( snake, snake_len );
+            alive = 1;
+            steer_angle = 0.0;
+            move_angle = 0.0;
+        }
+
+        if ( KEYS[SDL_GetScancodeFromName("Right")] && move_angle != 180.0 ) {
+            steer_angle = 0.0;
+        }
+        if ( KEYS[SDL_GetScancodeFromName("Left")] && move_angle != 0.0 ) {
+            steer_angle = 180.0;
+        }
+        if ( KEYS[SDL_GetScancodeFromName("Down")] && move_angle != 270.0 ) {
+            steer_angle = 90.0;
+        }
+        if ( KEYS[SDL_GetScancodeFromName("Up")] && move_angle != 90.0 ) {
+            steer_angle = 270.0;
         }
 
         if ( alive && game_time_current >= game_speed ) {
-            move_snake( snake, steer_angle, snake_len, grow );
+            move_angle = steer_angle;
+            move_snake( snake, move_angle, snake_len, grow );
             grow = 0;
 
             alive = collisions( snake, snake_len );
@@ -58,15 +73,8 @@ void process( SDL_Renderer * renderer ) {
                 snake_len++;
                 grow = 1;
             }
-            can_turn = 1;
             game_time_current = 0.0;
         }
-
-        if ( !alive && can_turn == 0 ) {
-            /*Wont block inputs after death*/
-            can_turn = 1;
-        }
-
         draw_ground( renderer, grass_tex );
         draw_tile( renderer, apple_tex, apple_pos );
         draw_snake( renderer, snake_tex, snake, snake_len );
@@ -84,7 +92,7 @@ void cap_framerate( Uint32 starting_tick ) {
     }
 }
 
-void input( int * running, double * angle ) {
+void input( int * running ) {
     SDL_Event event;
 
     while ( SDL_PollEvent( &event ) ) {
@@ -93,30 +101,13 @@ void input( int * running, double * angle ) {
                 *running = 0;
                 return;
             case SDL_KEYDOWN:
-                if ( event.key.keysym.sym == SDLK_RIGHT && *angle != 180.0) {
-                    *angle = 0;
-                    return;
-                }
-                else if ( event.key.keysym.sym == SDLK_LEFT && *angle != 0.0) {
-                    *angle = 180.0;
-                    return;
-                }
-                else if ( event.key.keysym.sym == SDLK_DOWN && *angle != 270.0) {
-                    *angle = 90.0;
-                    return;
-                }
-                else if ( event.key.keysym.sym == SDLK_UP && *angle != 90.0) {
-                    *angle = 270.0;
-                    return;
-                }
-                else if ( event.key.keysym.sym == SDLK_RETURN ) {
-                    *running = 2;
-                    return;
-                }
-                else if ( event.key.keysym.sym == SDLK_ESCAPE ) {
-                    *running = 0;
-                    return;
-                }
+                KEYS[event.key.keysym.scancode] = 1;
+                break;
+            case SDL_KEYUP:
+                KEYS[event.key.keysym.scancode] = 0;
+                break;
+            default:
+                break;
         }
     }
 }
@@ -126,7 +117,7 @@ void print_sdl_error( const char * message, const char * sdl_error_message ) {
 }
 
 Segment * create_snake( Uint16 snake_len ) {
-    Segment * snake;
+    Segment * snake = 0;
     Uint8 i;
     Vector2 map_tile_size;
 

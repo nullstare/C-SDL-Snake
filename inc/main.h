@@ -10,6 +10,7 @@
 #define WIN_HEIGHT 128
 #define WIN_SCALE 6
 #define FPS 60
+#define KEY_COUNT 322
 
 #define PI 3.14159265
 
@@ -26,5 +27,7 @@ typedef struct {
     Vector2 pos;
     double angle;
 } Segment;
+
+int KEYS[KEY_COUNT];
 
 #endif /* MAIN_H */

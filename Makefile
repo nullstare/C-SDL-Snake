@@ -1,15 +1,13 @@
 INCDIR = inc/
 CC = gcc
-# CC = clang # clearer error messages
+# CC = clang # better error messages
 CFLAGS = -I $(INCDIR) `sdl2-config --cflags` #-std=c11 #-Wall -pedantic -ansi
-LFLAGS = `sdl2-config --libs` -no-pie -lSDL2 -lSDL2_image
+LFLAGS = `sdl2-config --libs` -no-pie -lSDL2 -lSDL2_image -lm
 EXE = Snake
 
 OBJDIR = obj/
 LIBDIR = lib/
 SRCDIR = src/
-
-LIBS = -lm
 
 _DEPS = main.h game.h draw.h
 DEPS = $(patsubst %, $(INCDIR)%, $(_DEPS))
