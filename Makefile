@@ -1,7 +1,6 @@
 INCDIR = inc/
 CC = gcc
-# CC = clang # better error messages
-CFLAGS = -I $(INCDIR) `sdl2-config --cflags` #-std=c11 #-Wall -pedantic -ansi
+CFLAGS = -I $(INCDIR) `sdl2-config --cflags` #-std=c11 -Wall -pedantic -ansi
 LFLAGS = `sdl2-config --libs` -no-pie -lSDL2 -lSDL2_image -lm
 TARGET = Snake
 
@@ -16,10 +15,12 @@ _OBJ = main.o game.o draw.o
 OBJ = $(patsubst %, $(OBJDIR)%, $(_OBJ))
 
 $(OBJDIR)%.o: $(SRCDIR)%.c $(DEPS)
+	mkdir -p $(OBJDIR)	# not ideal solution
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 $(TARGET): $(OBJ)
 	$(CC) -o $@ $^ $(LIBS) $(LFLAGS)
 
 clean:
-	rm -f $(OBJDIR)*.o $(TARGET)
+	rm -f $(TARGET)
+	rm -r $(OBJDIR)

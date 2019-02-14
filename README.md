@@ -15,5 +15,7 @@ make
 ```
 You should now have **Snake** executable in the folder.
 
+If you get error about "-no-pie" remove it from LFLAGS in Makefile.
+
 # Controls
 **Arrows** to turn, **Escape** to quit and **Enter** to start new game when dead.
