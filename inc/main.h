@@ -2,6 +2,7 @@
 #define MAIN_H
 
 #include <SDL.h>
+// #include "SDL.h"
 #include <SDL_image.h>
 #include <time.h>
 #include <math.h>
